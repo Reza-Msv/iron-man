@@ -14,10 +14,30 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Stark Industries — Mark LXXXV",
+  title: "Iron Man — Mark LXXXV | Engineered by Reza Msv",
   description:
-    "Arc reactor online. J.A.R.V.I.S. standing by. Scroll to engage the Mark LXXXV.",
-  metadataBase: new URL("http://localhost:3000"),
+    "Interactive Iron Man nanotech suit experience, Stark Industries armory, arc reactor telemetry, and technological innovations engineered by Reza Msv.",
+  keywords: [
+    "Iron Man",
+    "Tony Stark",
+    "Reza Msv",
+    "Stark Industries",
+    "Mark LXXXV",
+    "Nanotech Armor",
+    "Next.js",
+  ],
+  authors: [{ name: "Reza Msv" }],
+  creator: "Reza Msv",
+  openGraph: {
+    title: "Iron Man — Mark LXXXV | Engineered by Reza Msv",
+    description:
+      "Interactive Iron Man nanotech suit experience, Stark Industries armory, and arc reactor telemetry.",
+    siteName: "Stark Industries — Reza Msv",
+    type: "website",
+  },
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({

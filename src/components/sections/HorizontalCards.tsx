@@ -286,17 +286,17 @@ export function HorizontalCards() {
       className="relative h-[220vh] bg-background border-t border-white/5"
     >
       {/* Sticky Full-Viewport Container */}
-      <div className="sticky top-0 flex h-[100dvh] w-full flex-col justify-between overflow-hidden py-6 md:py-8">
+      <div className="sticky top-0 flex h-[100dvh] w-full flex-col justify-between overflow-hidden py-3 sm:py-6 md:py-8">
         
         {/* Background Ambient Glows */}
         <div className="pointer-events-none absolute left-1/4 top-1/4 -z-10 h-[650px] w-[650px] rounded-full bg-accent/10 blur-[150px]" />
         <div className="pointer-events-none absolute right-1/4 bottom-1/4 -z-10 h-[550px] w-[550px] rounded-full bg-amber-500/10 blur-[130px]" />
 
-        {/* Top Header - RIGHT SIDE ALIGNED, BIGGER YELLOW ANIMATED TEXT */}
-        <div className="mx-auto w-full max-w-[1400px] px-6 md:px-10">
+        {/* Top Header - RIGHT SIDE ALIGNED, RESPONSIVE YELLOW TEXT */}
+        <div className="mx-auto w-full max-w-[1400px] px-4 sm:px-6 md:px-10">
           <div className="flex flex-col items-end text-right">
             <EyebrowBadge>STARK DATABASE // ARCHIVE &amp; LORE</EyebrowBadge>
-            <h2 className="mt-2 font-sans text-4xl font-bold leading-[0.92] tracking-tighter text-accent sm:text-6xl md:text-7xl lg:text-8xl">
+            <h2 className="mt-1 font-sans text-2xl font-bold leading-[0.95] tracking-tighter text-accent sm:text-5xl md:text-6xl lg:text-7xl">
               <GlowingText glowColor="rgba(212, 162, 47, 0.6)">
                 <TextReveal
                   text="Iron Man Tech & Innovation Showcase"
@@ -308,15 +308,15 @@ export function HorizontalCards() {
           </div>
         </div>
 
-        {/* Middle: CARDS Track with Generous Headroom and Right Side Margin */}
+        {/* Middle: CARDS Track with Dynamic Height Fitting for Mobile Viewports */}
         <div
           ref={containerRef}
-          className="my-auto w-full overflow-hidden py-8 md:py-12"
+          className="my-auto w-full overflow-hidden py-3 sm:py-6 md:py-10"
         >
           <motion.div
             ref={trackRef}
             style={{ x }}
-            className="flex gap-6 px-6 pr-16 md:gap-10 md:px-12 md:pr-24 items-stretch py-4"
+            className="flex gap-4 px-4 pr-12 sm:gap-6 sm:px-6 sm:pr-16 md:gap-10 md:px-12 md:pr-24 items-stretch py-2 sm:py-4"
           >
             {CARDS.map((card) => {
               const Icon = card.icon;
@@ -324,7 +324,7 @@ export function HorizontalCards() {
                 <div
                   key={card.id}
                   onClick={() => setSelectedCard(card)}
-                  className="group relative flex h-[54dvh] min-h-[480px] max-h-[640px] w-[320px] shrink-0 cursor-pointer flex-col justify-between overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] p-7 backdrop-blur-2xl transition-all duration-300 hover:-translate-y-4 hover:border-accent/60 hover:shadow-[0_25px_60px_rgba(212,162,47,0.2)] sm:w-[420px] md:w-[480px] lg:w-[520px] md:p-9"
+                  className="group relative flex h-[48dvh] min-h-[380px] max-h-[580px] w-[280px] shrink-0 cursor-pointer flex-col justify-between overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] p-5 backdrop-blur-2xl transition-all duration-300 hover:-translate-y-3 hover:border-accent/60 hover:shadow-[0_25px_60px_rgba(212,162,47,0.2)] sm:w-[380px] sm:p-7 md:w-[460px] md:p-9 lg:w-[500px]"
                 >
                   {/* Background Radial Gradient */}
                   <div
@@ -332,50 +332,50 @@ export function HorizontalCards() {
                   />
 
                   {/* High-Tech HUD Corners */}
-                  <div className="pointer-events-none absolute right-6 top-6 text-white/20 transition-colors group-hover:text-accent">
-                    <HudFrame corner="tr" size={24} />
+                  <div className="pointer-events-none absolute right-4 top-4 text-white/20 transition-colors group-hover:text-accent sm:right-6 sm:top-6">
+                    <HudFrame corner="tr" size={20} />
                   </div>
-                  <div className="pointer-events-none absolute bottom-6 left-6 text-white/20 transition-colors group-hover:text-accent">
-                    <HudFrame corner="bl" size={24} />
+                  <div className="pointer-events-none absolute bottom-4 left-4 text-white/20 transition-colors group-hover:text-accent sm:bottom-6 sm:left-6">
+                    <HudFrame corner="bl" size={20} />
                   </div>
 
                   {/* Card Header Content */}
-                  <div className="relative z-10 flex flex-col gap-4 md:gap-5">
+                  <div className="relative z-10 flex flex-col gap-3 sm:gap-4 md:gap-5">
                     <div className="flex items-center justify-between">
-                      <span className="font-mono text-xs uppercase tracking-[0.3em] text-accent">
+                      <span className="font-mono text-[10px] uppercase tracking-[0.28em] text-accent sm:text-xs">
                         {card.code}
                       </span>
                       <div
-                        className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/5 transition-transform duration-300 group-hover:scale-110 md:h-16 md:w-16"
+                        className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/5 transition-transform duration-300 group-hover:scale-110 sm:h-14 sm:w-14 md:h-16 md:w-16"
                         style={{ color: card.accentColor }}
                       >
-                        <Icon size={32} weight="duotone" />
+                        <Icon size={26} className="sm:text-[30px] md:text-[34px]" weight="duotone" />
                       </div>
                     </div>
 
                     <div>
-                      <span className="font-mono text-xs uppercase tracking-[0.28em] text-zinc-400">
+                      <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-zinc-400 sm:text-xs">
                         {card.category}
                       </span>
-                      <h3 className="mt-1 font-sans text-2xl font-bold tracking-tight text-foreground transition-colors group-hover:text-accent md:text-4xl">
+                      <h3 className="mt-0.5 font-sans text-xl font-bold tracking-tight text-foreground transition-colors group-hover:text-accent sm:text-3xl md:text-4xl">
                         {card.title}
                       </h3>
-                      <p className="font-mono text-xs text-zinc-400">
+                      <p className="font-mono text-[11px] text-zinc-400 sm:text-xs">
                         {card.subtitle}
                       </p>
                     </div>
 
-                    <p className="line-clamp-3 font-sans text-xs leading-relaxed text-zinc-300 md:line-clamp-4 md:text-sm">
+                    <p className="line-clamp-2 font-sans text-xs leading-relaxed text-zinc-300 sm:line-clamp-3 md:line-clamp-4 md:text-sm">
                       {card.description}
                     </p>
                   </div>
 
                   {/* Card Bottom Specs & Expand Action */}
-                  <div className="relative z-10 border-t border-white/10 pt-5 md:pt-6">
-                    <div className="grid grid-cols-3 gap-3">
+                  <div className="relative z-10 border-t border-white/10 pt-3 sm:pt-4 md:pt-6">
+                    <div className="grid grid-cols-3 gap-2 sm:gap-3">
                       {card.stats.map((s) => (
                         <div key={s.label} className="flex flex-col gap-0.5">
-                          <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-zinc-500">
+                          <span className="font-mono text-[8px] uppercase tracking-[0.18em] text-zinc-500 sm:text-[9px]">
                             {s.label}
                           </span>
                           <span className="font-mono text-xs font-bold text-foreground sm:text-sm md:text-base">
@@ -385,12 +385,12 @@ export function HorizontalCards() {
                       ))}
                     </div>
 
-                    <div className="mt-5 flex items-center justify-between font-mono text-[11px] uppercase tracking-[0.25em] text-accent md:mt-6 md:text-xs">
-                      <span className="flex items-center gap-2">
+                    <div className="mt-3 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.22em] text-accent sm:mt-5 sm:text-xs">
+                      <span className="flex items-center gap-1.5 sm:gap-2">
                         Inspect Blueprint
-                        <CornersOut size={15} weight="bold" />
+                        <CornersOut size={14} weight="bold" />
                       </span>
-                      <span className="h-2 w-2 rounded-full bg-accent animate-pulse" />
+                      <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse" />
                     </div>
                   </div>
                 </div>
@@ -400,16 +400,16 @@ export function HorizontalCards() {
         </div>
 
         {/* Bottom Scroll Progress Bar */}
-        <div className="mx-auto w-full max-w-[1400px] px-6 md:px-10">
-          <div className="mb-2 h-px bg-white/10">
+        <div className="mx-auto w-full max-w-[1400px] px-4 sm:px-6 md:px-10">
+          <div className="mb-1.5 h-px bg-white/10">
             <motion.div
               className="h-full origin-left bg-accent"
               style={{ scaleX: scrollYProgress }}
             />
           </div>
-          <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.28em] text-zinc-500">
-            <span>DATABASE ARCHIVE // 001 - 009</span>
-            <span>STARK INDUSTRIES // HORIZONTAL SCROLL</span>
+          <div className="flex items-center justify-between font-mono text-[9px] uppercase tracking-[0.25em] text-zinc-500 sm:text-[10px]">
+            <span>ARCHIVE // 001 - 009</span>
+            <span>HORIZONTAL SCROLL</span>
             <span>Scroll &darr;</span>
           </div>
         </div>

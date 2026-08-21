@@ -193,8 +193,8 @@ export function SuitArmory() {
         </div>
 
         {/* 1. SUIT SWITCHER BUTTONS - MUST BE IN ONE SINGLE ROW */}
-        <div className="mt-10 flex w-full justify-center">
-          <div className="flex flex-row flex-nowrap items-center gap-2 overflow-x-auto rounded-full border border-white/10 bg-white/[0.03] p-1.5 backdrop-blur-xl scrollbar-none max-w-full md:gap-3 md:p-2">
+        <div className="mt-8 flex w-full justify-start md:justify-center">
+          <div className="flex flex-row flex-nowrap items-center gap-2 overflow-x-auto rounded-full border border-white/10 bg-white/[0.03] p-1.5 backdrop-blur-xl scrollbar-none max-w-full w-full md:w-auto justify-start md:justify-center px-3 md:gap-3 md:p-2">
             {SUITS.map((suit) => {
               const isActive = suit.id === activeSuitId;
               return (
@@ -237,26 +237,26 @@ export function SuitArmory() {
         </div>
 
         {/* 2. MAIN SHOWCASE DISPLAY (CHARACTER VISUAL & SPECS HUD) */}
-        <div className="mt-14 grid grid-cols-1 gap-12 lg:grid-cols-[5fr_6fr] lg:gap-16 items-center">
+        <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-[5fr_6fr] lg:gap-16 items-center">
           
           {/* LEFT: CHARACTER VISUAL DISPLAY WITH ANIMATION */}
-          <div className="relative flex flex-col items-center justify-center rounded-3xl border border-white/10 bg-white/[0.02] p-8 backdrop-blur-2xl md:p-12 min-h-[460px]">
+          <div className="relative flex flex-col items-center justify-center rounded-3xl border border-white/10 bg-white/[0.02] p-6 sm:p-8 md:p-12 min-h-[380px] md:min-h-[460px] overflow-hidden">
             {/* HUD Frame Corners */}
-            <div className="pointer-events-none absolute left-5 top-5 text-accent/60">
-              <HudFrame corner="tl" size={24} />
+            <div className="pointer-events-none absolute left-4 top-4 text-accent/60 md:left-5 md:top-5">
+              <HudFrame corner="tl" size={20} />
             </div>
-            <div className="pointer-events-none absolute right-5 top-5 text-accent/60">
-              <HudFrame corner="tr" size={24} />
+            <div className="pointer-events-none absolute right-4 top-4 text-accent/60 md:right-5 md:top-5">
+              <HudFrame corner="tr" size={20} />
             </div>
-            <div className="pointer-events-none absolute bottom-5 left-5 text-accent/60">
-              <HudFrame corner="bl" size={24} />
+            <div className="pointer-events-none absolute bottom-4 left-4 text-accent/60 md:bottom-5 md:left-5">
+              <HudFrame corner="bl" size={20} />
             </div>
-            <div className="pointer-events-none absolute bottom-5 right-5 text-accent/60">
-              <HudFrame corner="br" size={24} />
+            <div className="pointer-events-none absolute bottom-4 right-4 text-accent/60 md:bottom-5 md:right-5">
+              <HudFrame corner="br" size={20} />
             </div>
 
             {/* HUD Top Readout */}
-            <div className="absolute top-6 flex w-full items-center justify-between px-10 font-mono text-[10px] uppercase tracking-[0.25em] text-zinc-500">
+            <div className="absolute top-5 flex w-full items-center justify-between px-6 font-mono text-[9px] uppercase tracking-[0.2em] text-zinc-500 md:top-6 md:px-10 md:text-[10px] md:tracking-[0.25em]">
               <span>{activeSuit.hudCode}</span>
               <span className="flex items-center gap-2 text-accent">
                 <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse" />
@@ -272,13 +272,13 @@ export function SuitArmory() {
                 animate={{ opacity: 1, scale: 1, rotateY: 0, filter: "blur(0px)" }}
                 exit={{ opacity: 0, scale: 1.1, rotateY: 15, filter: "blur(10px)" }}
                 transition={{ duration: 0.45, ease: "easeOut" }}
-                className="relative my-8 flex items-center justify-center"
+                className="relative my-6 flex items-center justify-center md:my-8"
               >
                 {/* Repulsor Energy Ring Background */}
                 <motion.div
                   animate={{ rotate: 360 }}
                   transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-                  className="absolute h-80 w-80 rounded-full border border-dashed border-white/15 md:h-96 md:w-96"
+                  className="absolute h-64 w-64 rounded-full border border-dashed border-white/15 sm:h-72 sm:w-72 md:h-96 md:w-96"
                   style={{ borderColor: activeSuit.accentGlow }}
                 />
 
@@ -286,19 +286,17 @@ export function SuitArmory() {
                 <motion.div
                   animate={{ scale: [0.95, 1.08, 0.95], opacity: [0.3, 0.7, 0.3] }}
                   transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                  className="absolute h-64 w-64 rounded-full blur-2xl md:h-80 md:w-80"
+                  className="absolute h-48 w-48 rounded-full blur-2xl sm:h-60 sm:w-60 md:h-80 md:w-80"
                   style={{ backgroundColor: activeSuit.accentGlow }}
                 />
 
                 {/* IRON MAN CHARACTER SUIT SVG / HUD RENDER */}
                 <div className="relative z-10 flex flex-col items-center">
                   <svg
-                    width="280"
-                    height="360"
                     viewBox="0 0 280 360"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
-                    className="drop-shadow-[0_20px_50px_rgba(0,0,0,0.8)]"
+                    className="h-[285px] w-[220px] sm:h-[320px] sm:w-[250px] md:h-[360px] md:w-[280px] drop-shadow-[0_20px_50px_rgba(0,0,0,0.8)]"
                   >
                     {/* Suit Body Silhouette */}
                     {/* Shoulders */}
