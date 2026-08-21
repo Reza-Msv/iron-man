@@ -1,10 +1,8 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useRef, useState, useEffect } from "react";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import {
-  CaretLeft,
-  CaretRight,
   Lightning,
   ShieldCheck,
   Cpu,
@@ -12,10 +10,11 @@ import {
   Atom,
   Sparkle,
   X,
+  CornersOut,
 } from "@phosphor-icons/react";
 import { EyebrowBadge } from "@/components/ui/EyebrowBadge";
 import { HudFrame } from "@/components/ui/HudFrame";
-import { TextReveal } from "@/components/ui/AnimatedText";
+import { TextReveal, GlowingText } from "@/components/ui/AnimatedText";
 
 type CardData = {
   id: string;
@@ -53,7 +52,7 @@ const CARDS: CardData[] = [
     ],
     icon: Atom,
     accentColor: "#00F0FF",
-    gradient: "from-cyan-500/20 via-sky-500/5 to-transparent",
+    gradient: "from-cyan-500/25 via-sky-500/10 to-transparent",
   },
   {
     id: "card-2",
@@ -76,7 +75,7 @@ const CARDS: CardData[] = [
     ],
     icon: Lightning,
     accentColor: "#D4A22F",
-    gradient: "from-amber-500/20 via-yellow-500/5 to-transparent",
+    gradient: "from-amber-500/25 via-yellow-500/10 to-transparent",
   },
   {
     id: "card-3",
@@ -99,7 +98,7 @@ const CARDS: CardData[] = [
     ],
     icon: ShieldCheck,
     accentColor: "#EF4444",
-    gradient: "from-red-500/20 via-rose-500/5 to-transparent",
+    gradient: "from-red-500/25 via-rose-500/10 to-transparent",
   },
   {
     id: "card-4",
@@ -122,7 +121,7 @@ const CARDS: CardData[] = [
     ],
     icon: Sparkle,
     accentColor: "#A855F7",
-    gradient: "from-purple-500/20 via-fuchsia-500/5 to-transparent",
+    gradient: "from-purple-500/25 via-fuchsia-500/10 to-transparent",
   },
   {
     id: "card-5",
@@ -145,7 +144,7 @@ const CARDS: CardData[] = [
     ],
     icon: Cpu,
     accentColor: "#10B981",
-    gradient: "from-emerald-500/20 via-teal-500/5 to-transparent",
+    gradient: "from-emerald-500/25 via-teal-500/10 to-transparent",
   },
   {
     id: "card-6",
@@ -168,153 +167,256 @@ const CARDS: CardData[] = [
     ],
     icon: FlyingSaucer,
     accentColor: "#F59E0B",
-    gradient: "from-amber-500/25 via-yellow-500/10 to-transparent",
+    gradient: "from-amber-500/30 via-yellow-500/15 to-transparent",
+  },
+  {
+    id: "card-7",
+    code: "DEFENSE // 007",
+    title: "Energy Matrix Shield",
+    subtitle: "Deployable Hex-Refractor Barrier",
+    category: "DEFENSIVE SHIELDING",
+    description:
+      "Solid-light repulsor matrix shield deployed from forearm housing, absorbing kinetic impacts and dispersing energy across sub-atomic dampeners.",
+    details: [
+      "Hexagonal solid-light energy lattice",
+      "Deflects high-velocity kinetic projectiles",
+      "Instantaneous emergency deployment",
+      "Zero weight impact on suit maneuverability",
+    ],
+    stats: [
+      { label: "Deflect Rating", value: "99.8%" },
+      { label: "Deploy Speed", value: "0.01 s" },
+      { label: "Power Draw", value: "Adaptive" },
+    ],
+    icon: ShieldCheck,
+    accentColor: "#3B82F6",
+    gradient: "from-blue-500/25 via-sky-500/10 to-transparent",
+  },
+  {
+    id: "card-8",
+    code: "ORDNANCE // 008",
+    title: "Smart Micro-Missiles",
+    subtitle: "Shoulder-Mounted Kinetic Ordnance",
+    category: "TACTICAL STRIKE",
+    description:
+      "High-density armor-piercing micro-missiles housing laser guidance and smart IFF friend-or-foe targeting modules.",
+    details: [
+      "Shoulder pop-up launch pod array",
+      "Self-guided kinetic warheads",
+      "Integrated target tracking via J.A.R.V.I.S.",
+      "Multi-target simultaneous tracking",
+    ],
+    stats: [
+      { label: "Payload", value: "12 Warheads" },
+      { label: "Range", value: "3.5 km" },
+      { label: "Target Lock", value: "Multi-Target" },
+    ],
+    icon: Lightning,
+    accentColor: "#E11D48",
+    gradient: "from-rose-500/25 via-red-500/10 to-transparent",
+  },
+  {
+    id: "card-9",
+    code: "NEURAL // 009",
+    title: "J.A.R.V.I.S. Core",
+    subtitle: "Just A Rather Very Intelligent System",
+    category: "PRIMARY AI MATRIX",
+    description:
+      "Tony Stark's original artificial intelligence assistant, managing suit telemetry, environmental hazards, flight controls, and home security.",
+    details: [
+      "Natural language voice conversation",
+      "Automated threat response & diagnostic link",
+      "Orbital satellite real-time sync",
+      "Neural link direct pilot brainwave interface",
+    ],
+    stats: [
+      { label: "Neural Speed", value: "Sub-ms" },
+      { label: "Core Memory", value: "Unlimited" },
+      { label: "Status", value: "Legendary" },
+    ],
+    icon: Cpu,
+    accentColor: "#6366F1",
+    gradient: "from-indigo-500/25 via-purple-500/10 to-transparent",
   },
 ];
 
 export function HorizontalCards() {
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const targetRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
   const [selectedCard, setSelectedCard] = useState<CardData | null>(null);
+  const [scrollDistance, setScrollDistance] = useState<number>(0);
 
-  const handleScroll = (direction: "left" | "right") => {
-    if (!scrollRef.current) return;
-    const scrollAmount = 380;
-    scrollRef.current.scrollBy({
-      left: direction === "left" ? -scrollAmount : scrollAmount,
-      behavior: "smooth",
-    });
-  };
+  // Smooth scroll tracking across section height
+  const { scrollYProgress } = useScroll({
+    target: targetRef,
+  });
+
+  // Calculate exact scroll distance using DOM offset position of the last card
+  useEffect(() => {
+    const updateDistance = () => {
+      if (trackRef.current && containerRef.current) {
+        const trackEl = trackRef.current;
+        const containerEl = containerRef.current;
+        const lastChild = trackEl.lastElementChild as HTMLElement;
+        if (lastChild) {
+          // Precise pixel distance needed to align last card right edge + 64px right margin
+          const totalWidth = lastChild.offsetLeft + lastChild.offsetWidth + 64;
+          const maxScroll = Math.max(0, totalWidth - containerEl.offsetWidth);
+          setScrollDistance(maxScroll);
+        }
+      }
+    };
+
+    updateDistance();
+    const timer = setTimeout(updateDistance, 150);
+    window.addEventListener("resize", updateDistance);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("resize", updateDistance);
+    };
+  }, []);
+
+  const x = useTransform(scrollYProgress, [0, 1], [0, -scrollDistance]);
 
   return (
     <section
+      ref={targetRef}
       id="lore"
-      className="relative overflow-hidden border-t border-white/5 bg-background py-24 md:py-32"
+      className="relative h-[220vh] bg-background border-t border-white/5"
     >
-      {/* Background glow effects */}
-      <div className="pointer-events-none absolute left-1/4 top-0 -z-10 h-[500px] w-[500px] rounded-full bg-accent/5 blur-[120px]" />
-      <div className="pointer-events-none absolute right-1/4 bottom-0 -z-10 h-[400px] w-[400px] rounded-full bg-cyan-500/5 blur-[100px]" />
+      {/* Sticky Full-Viewport Container */}
+      <div className="sticky top-0 flex h-[100dvh] w-full flex-col justify-between overflow-hidden py-6 md:py-8">
+        
+        {/* Background Ambient Glows */}
+        <div className="pointer-events-none absolute left-1/4 top-1/4 -z-10 h-[650px] w-[650px] rounded-full bg-accent/10 blur-[150px]" />
+        <div className="pointer-events-none absolute right-1/4 bottom-1/4 -z-10 h-[550px] w-[550px] rounded-full bg-amber-500/10 blur-[130px]" />
 
-      <div className="mx-auto max-w-[1400px] px-6 md:px-10">
-        {/* Section Header */}
-        <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
-          <div className="flex flex-col gap-4">
+        {/* Top Header - RIGHT SIDE ALIGNED, BIGGER YELLOW ANIMATED TEXT */}
+        <div className="mx-auto w-full max-w-[1400px] px-6 md:px-10">
+          <div className="flex flex-col items-end text-right">
             <EyebrowBadge>STARK DATABASE // ARCHIVE &amp; LORE</EyebrowBadge>
-            <h2 className="font-sans text-4xl font-semibold tracking-tighter text-foreground md:text-6xl">
-              <TextReveal text="Iron Man Tech & Innovation Showcase" as="span" />
+            <h2 className="mt-2 font-sans text-4xl font-bold leading-[0.92] tracking-tighter text-accent sm:text-6xl md:text-7xl lg:text-8xl">
+              <GlowingText glowColor="rgba(212, 162, 47, 0.6)">
+                <TextReveal
+                  text="Iron Man Tech & Innovation Showcase"
+                  as="span"
+                  delay={0.1}
+                />
+              </GlowingText>
             </h2>
-            <p className="max-w-[50ch] font-sans text-sm text-zinc-400 md:text-base">
-              Swipe or use navigation controls to explore Stark Industries landmark armor breakthroughs, arc energy innovations, and battlefield containment protocols.
-            </p>
-          </div>
-
-          {/* Controls */}
-          <div className="flex items-center gap-3 self-start md:self-end">
-            <button
-              onClick={() => handleScroll("left")}
-              aria-label="Scroll left"
-              className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-foreground backdrop-blur-md transition-all hover:border-accent hover:bg-accent/10 active:scale-95"
-            >
-              <CaretLeft size={20} weight="bold" />
-            </button>
-            <button
-              onClick={() => handleScroll("right")}
-              aria-label="Scroll right"
-              className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-foreground backdrop-blur-md transition-all hover:border-accent hover:bg-accent/10 active:scale-95"
-            >
-              <CaretRight size={20} weight="bold" />
-            </button>
           </div>
         </div>
 
-        {/* Horizontal Cards Container */}
+        {/* Middle: CARDS Track with Generous Headroom and Right Side Margin */}
         <div
-          ref={scrollRef}
-          className="mt-12 flex snap-x snap-mandatory overflow-x-auto pb-8 pt-4 scrollbar-none gap-6 md:gap-8"
-          style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          ref={containerRef}
+          className="my-auto w-full overflow-hidden py-8 md:py-12"
         >
-          {CARDS.map((card, idx) => {
-            const Icon = card.icon;
-            return (
-              <motion.div
-                key={card.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.5, delay: idx * 0.08 }}
-                onClick={() => setSelectedCard(card)}
-                className="group relative flex w-[320px] shrink-0 cursor-pointer snap-start flex-col justify-between rounded-2xl border border-white/10 bg-white/[0.03] p-7 backdrop-blur-xl transition-all duration-300 hover:-translate-y-2 hover:border-accent/50 hover:shadow-[0_15px_35px_rgba(0,0,0,0.5)] md:w-[380px]"
-              >
-                {/* Gradient background glow on hover */}
+          <motion.div
+            ref={trackRef}
+            style={{ x }}
+            className="flex gap-6 px-6 pr-16 md:gap-10 md:px-12 md:pr-24 items-stretch py-4"
+          >
+            {CARDS.map((card) => {
+              const Icon = card.icon;
+              return (
                 <div
-                  className={`pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-b ${card.gradient} opacity-0 transition-opacity duration-300 group-hover:opacity-100`}
-                />
+                  key={card.id}
+                  onClick={() => setSelectedCard(card)}
+                  className="group relative flex h-[54dvh] min-h-[480px] max-h-[640px] w-[320px] shrink-0 cursor-pointer flex-col justify-between overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] p-7 backdrop-blur-2xl transition-all duration-300 hover:-translate-y-4 hover:border-accent/60 hover:shadow-[0_25px_60px_rgba(212,162,47,0.2)] sm:w-[420px] md:w-[480px] lg:w-[520px] md:p-9"
+                >
+                  {/* Background Radial Gradient */}
+                  <div
+                    className={`pointer-events-none absolute inset-0 rounded-3xl bg-gradient-to-b ${card.gradient} opacity-20 transition-opacity duration-300 group-hover:opacity-100`}
+                  />
 
-                {/* HUD frame accents */}
-                <div className="pointer-events-none absolute right-4 top-4 text-white/20 transition-colors group-hover:text-accent">
-                  <HudFrame corner="tr" size={16} />
-                </div>
-                <div className="pointer-events-none absolute bottom-4 left-4 text-white/20 transition-colors group-hover:text-accent">
-                  <HudFrame corner="bl" size={16} />
-                </div>
-
-                {/* Card Top */}
-                <div className="relative z-10 flex flex-col gap-5">
-                  <div className="flex items-center justify-between">
-                    <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent">
-                      {card.code}
-                    </span>
-                    <div
-                      className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 transition-transform duration-300 group-hover:scale-110"
-                      style={{ color: card.accentColor }}
-                    >
-                      <Icon size={22} weight="duotone" />
-                    </div>
+                  {/* High-Tech HUD Corners */}
+                  <div className="pointer-events-none absolute right-6 top-6 text-white/20 transition-colors group-hover:text-accent">
+                    <HudFrame corner="tr" size={24} />
+                  </div>
+                  <div className="pointer-events-none absolute bottom-6 left-6 text-white/20 transition-colors group-hover:text-accent">
+                    <HudFrame corner="bl" size={24} />
                   </div>
 
-                  <div>
-                    <span className="font-mono text-[9px] uppercase tracking-[0.25em] text-zinc-400">
-                      {card.category}
-                    </span>
-                    <h3 className="mt-1 font-sans text-2xl font-semibold tracking-tight text-foreground transition-colors group-hover:text-accent">
-                      {card.title}
-                    </h3>
-                    <p className="font-mono text-[11px] text-zinc-400">
-                      {card.subtitle}
+                  {/* Card Header Content */}
+                  <div className="relative z-10 flex flex-col gap-4 md:gap-5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-mono text-xs uppercase tracking-[0.3em] text-accent">
+                        {card.code}
+                      </span>
+                      <div
+                        className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/5 transition-transform duration-300 group-hover:scale-110 md:h-16 md:w-16"
+                        style={{ color: card.accentColor }}
+                      >
+                        <Icon size={32} weight="duotone" />
+                      </div>
+                    </div>
+
+                    <div>
+                      <span className="font-mono text-xs uppercase tracking-[0.28em] text-zinc-400">
+                        {card.category}
+                      </span>
+                      <h3 className="mt-1 font-sans text-2xl font-bold tracking-tight text-foreground transition-colors group-hover:text-accent md:text-4xl">
+                        {card.title}
+                      </h3>
+                      <p className="font-mono text-xs text-zinc-400">
+                        {card.subtitle}
+                      </p>
+                    </div>
+
+                    <p className="line-clamp-3 font-sans text-xs leading-relaxed text-zinc-300 md:line-clamp-4 md:text-sm">
+                      {card.description}
                     </p>
                   </div>
 
-                  <p className="line-clamp-3 font-sans text-xs leading-relaxed text-zinc-300">
-                    {card.description}
-                  </p>
-                </div>
+                  {/* Card Bottom Specs & Expand Action */}
+                  <div className="relative z-10 border-t border-white/10 pt-5 md:pt-6">
+                    <div className="grid grid-cols-3 gap-3">
+                      {card.stats.map((s) => (
+                        <div key={s.label} className="flex flex-col gap-0.5">
+                          <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-zinc-500">
+                            {s.label}
+                          </span>
+                          <span className="font-mono text-xs font-bold text-foreground sm:text-sm md:text-base">
+                            {s.value}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
 
-                {/* Card Bottom Stats Preview */}
-                <div className="relative z-10 mt-8 border-t border-white/10 pt-5">
-                  <div className="grid grid-cols-2 gap-4">
-                    {card.stats.slice(0, 2).map((s) => (
-                      <div key={s.label} className="flex flex-col gap-0.5">
-                        <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-zinc-500">
-                          {s.label}
-                        </span>
-                        <span className="font-mono text-sm font-semibold text-foreground">
-                          {s.value}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="mt-5 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.25em] text-accent">
-                    <span>Inspect Specs &rarr;</span>
-                    <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse" />
+                    <div className="mt-5 flex items-center justify-between font-mono text-[11px] uppercase tracking-[0.25em] text-accent md:mt-6 md:text-xs">
+                      <span className="flex items-center gap-2">
+                        Inspect Blueprint
+                        <CornersOut size={15} weight="bold" />
+                      </span>
+                      <span className="h-2 w-2 rounded-full bg-accent animate-pulse" />
+                    </div>
                   </div>
                 </div>
-              </motion.div>
-            );
-          })}
+              );
+            })}
+          </motion.div>
         </div>
+
+        {/* Bottom Scroll Progress Bar */}
+        <div className="mx-auto w-full max-w-[1400px] px-6 md:px-10">
+          <div className="mb-2 h-px bg-white/10">
+            <motion.div
+              className="h-full origin-left bg-accent"
+              style={{ scaleX: scrollYProgress }}
+            />
+          </div>
+          <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.28em] text-zinc-500">
+            <span>DATABASE ARCHIVE // 001 - 009</span>
+            <span>STARK INDUSTRIES // HORIZONTAL SCROLL</span>
+            <span>Scroll &darr;</span>
+          </div>
+        </div>
+
       </div>
 
-      {/* Expanded Card Modal */}
+      {/* Expanded Blueprint Card Modal */}
       <AnimatePresence>
         {selectedCard && (
           <motion.div
@@ -322,53 +424,53 @@ export function HorizontalCards() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setSelectedCard(null)}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-md"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 backdrop-blur-lg"
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl border border-white/15 bg-zinc-950 p-6 md:p-8"
+              className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl border border-white/15 bg-zinc-950 p-6 md:p-10"
             >
               {/* Modal Close Button */}
               <button
                 onClick={() => setSelectedCard(null)}
-                className="absolute right-5 top-5 flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-zinc-400 hover:bg-white/10 hover:text-foreground"
+                className="absolute right-6 top-6 flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-zinc-400 hover:bg-white/10 hover:text-foreground"
               >
-                <X size={18} weight="bold" />
+                <X size={20} weight="bold" />
               </button>
 
               <div className="flex items-center gap-3">
-                <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent">
+                <span className="font-mono text-xs uppercase tracking-[0.3em] text-accent">
                   {selectedCard.code}
                 </span>
                 <span className="h-1 w-1 rounded-full bg-white/20" />
-                <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-zinc-400">
+                <span className="font-mono text-xs uppercase tracking-[0.25em] text-zinc-400">
                   {selectedCard.category}
                 </span>
               </div>
 
-              <h3 className="mt-2 font-sans text-3xl font-bold tracking-tight text-foreground md:text-4xl">
+              <h3 className="mt-3 font-sans text-3xl font-bold tracking-tight text-foreground md:text-5xl">
                 {selectedCard.title}
               </h3>
-              <p className="font-mono text-xs text-zinc-400">
+              <p className="font-mono text-sm text-zinc-400">
                 {selectedCard.subtitle}
               </p>
 
-              <p className="mt-4 font-sans text-sm leading-relaxed text-zinc-300 md:text-base">
+              <p className="mt-4 font-sans text-base leading-relaxed text-zinc-300 md:text-lg">
                 {selectedCard.description}
               </p>
 
-              {/* Stats Bar Grid */}
-              <div className="mt-6 grid grid-cols-3 gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+              {/* Stats Grid */}
+              <div className="mt-8 grid grid-cols-3 gap-4 rounded-2xl border border-white/10 bg-white/[0.03] p-5">
                 {selectedCard.stats.map((st) => (
                   <div key={st.label} className="flex flex-col gap-1">
-                    <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-zinc-500">
+                    <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-500">
                       {st.label}
                     </span>
                     <span
-                      className="font-mono text-base font-semibold md:text-lg"
+                      className="font-mono text-lg font-bold md:text-xl"
                       style={{ color: selectedCard.accentColor }}
                     >
                       {st.value}
@@ -377,28 +479,28 @@ export function HorizontalCards() {
                 ))}
               </div>
 
-              {/* Details breakdown */}
-              <div className="mt-6">
-                <h4 className="font-mono text-[11px] uppercase tracking-[0.28em] text-zinc-400">
+              {/* Technical Details */}
+              <div className="mt-8">
+                <h4 className="font-mono text-xs uppercase tracking-[0.28em] text-zinc-400">
                   TECHNICAL BREAKDOWN
                 </h4>
-                <ul className="mt-3 flex flex-col gap-2.5">
+                <ul className="mt-4 flex flex-col gap-3">
                   {selectedCard.details.map((item, idx) => (
                     <li
                       key={idx}
-                      className="flex items-start gap-2.5 font-sans text-xs text-zinc-300 md:text-sm"
+                      className="flex items-start gap-3 font-sans text-sm text-zinc-300 md:text-base"
                     >
-                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
+                      <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-accent" />
                       <span>{item}</span>
                     </li>
                   ))}
                 </ul>
               </div>
 
-              <div className="mt-8 flex justify-end">
+              <div className="mt-10 flex justify-end">
                 <button
                   onClick={() => setSelectedCard(null)}
-                  className="rounded-full border border-accent/40 bg-accent/10 px-6 py-2.5 font-mono text-[11px] uppercase tracking-[0.22em] text-accent transition-colors hover:bg-accent hover:text-black"
+                  className="rounded-full border border-accent/40 bg-accent/10 px-8 py-3 font-mono text-xs uppercase tracking-[0.22em] text-accent transition-colors hover:bg-accent hover:text-black"
                 >
                   Close Diagnostic
                 </button>
