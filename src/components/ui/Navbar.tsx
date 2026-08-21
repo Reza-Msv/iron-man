@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ArrowUpRight } from "@phosphor-icons/react";
+import { ScrambleText } from "@/components/ui/AnimatedText";
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -25,35 +26,47 @@ export function Navbar() {
       <div className="mx-auto flex max-w-[1400px] items-center justify-between px-6 py-4 md:px-8 md:py-5">
         <Link
           href="/"
-          className="flex items-center gap-2.5 font-mono text-[11px] font-semibold uppercase tracking-[0.32em] text-foreground"
+          className="flex items-center gap-2.5 font-mono text-[11px] font-semibold uppercase tracking-[0.32em] text-foreground transition-all hover:text-accent"
         >
           <span
             aria-hidden
-            className="inline-block h-2 w-2 rounded-full bg-accent shadow-[0_0_12px_rgba(212,162,47,0.9)]"
+            className="inline-block h-2 w-2 rounded-full bg-accent shadow-[0_0_12px_rgba(212,162,47,0.9)] animate-pulse"
           />
-          Stark / Industries
+          <ScrambleText text="STARK / INDUSTRIES" scrambleOnHover={true} />
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">
           <a
+            href="#lore"
+            className="font-mono text-[11px] uppercase tracking-[0.24em] text-zinc-400 transition-colors hover:text-accent"
+          >
+            Database
+          </a>
+          <a
+            href="#armory"
+            className="font-mono text-[11px] uppercase tracking-[0.24em] text-zinc-400 transition-colors hover:text-accent"
+          >
+            Armory
+          </a>
+          <a
             href="#systems"
-            className="font-mono text-[11px] uppercase tracking-[0.24em] text-zinc-400 transition-colors hover:text-foreground"
+            className="font-mono text-[11px] uppercase tracking-[0.24em] text-zinc-400 transition-colors hover:text-accent"
           >
             Systems
           </a>
           <a
             href="#footer"
-            className="font-mono text-[11px] uppercase tracking-[0.24em] text-zinc-400 transition-colors hover:text-foreground"
+            className="font-mono text-[11px] uppercase tracking-[0.24em] text-zinc-400 transition-colors hover:text-accent"
           >
             Archive
           </a>
         </nav>
 
         <a
-          href="#systems"
-          className="group inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/[0.05] px-4 py-2 font-mono text-[11px] font-medium uppercase tracking-[0.22em] text-foreground backdrop-blur-md transition-all duration-200 hover:bg-white/[0.1] active:translate-y-[1px]"
+          href="#armory"
+          className="group inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/[0.05] px-4 py-2 font-mono text-[11px] font-medium uppercase tracking-[0.22em] text-foreground backdrop-blur-md transition-all duration-200 hover:border-accent/40 hover:bg-accent/10 hover:text-accent active:translate-y-[1px]"
         >
-          Engage
+          Select Suit
           <ArrowUpRight
             size={14}
             weight="bold"

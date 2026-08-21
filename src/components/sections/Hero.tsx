@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { EyebrowBadge } from "@/components/ui/EyebrowBadge";
 import { HudFrame } from "@/components/ui/HudFrame";
+import { GlowingText } from "@/components/ui/AnimatedText";
 import { DIALOGUES, FRAME_COUNT, HERO_TEXT_FADE_END, framePath } from "@/lib/hero";
 
 export function Hero() {
@@ -223,7 +224,7 @@ export function Hero() {
           <h1 className="max-w-[14ch] font-sans text-5xl font-semibold leading-[0.95] tracking-tighter text-foreground md:text-7xl lg:text-8xl">
             I am
             <br />
-            <span className="text-accent">Iron Man.</span>
+            <GlowingText className="text-accent">Iron Man.</GlowingText>
           </h1>
           <p className="max-w-[42ch] font-sans text-sm leading-relaxed text-zinc-400 md:text-base">
             Mark LXXXV nanotech suit. Arc reactor calibrated. Scroll to run a full

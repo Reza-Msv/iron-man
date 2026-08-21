@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { EyebrowBadge } from "@/components/ui/EyebrowBadge";
 import { HudFrame } from "@/components/ui/HudFrame";
+import { GlowingText } from "@/components/ui/AnimatedText";
 import { BEATS, CINE_FRAME_COUNT, cineFramePath } from "@/lib/cinematic";
 
 export function CinematicReveal() {
@@ -232,7 +233,7 @@ export function CinematicReveal() {
             >
               I am
               <br />
-              <span className="text-accent">Inevitable.</span>
+              <GlowingText className="text-accent">Inevitable.</GlowingText>
             </h2>
             <h2
               ref={h2IronManRef}
@@ -241,7 +242,7 @@ export function CinematicReveal() {
             >
               And I am
               <br />
-              <span className="text-accent">Iron Man.</span>
+              <GlowingText className="text-accent">Iron Man.</GlowingText>
             </h2>
           </div>
           <p className="max-w-[42ch] font-sans text-sm leading-relaxed text-zinc-400 md:text-base">

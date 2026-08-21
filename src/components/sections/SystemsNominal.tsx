@@ -3,6 +3,7 @@
 import { ArrowUpRight } from "@phosphor-icons/react";
 import { EyebrowBadge } from "@/components/ui/EyebrowBadge";
 import { AnimatedItem, AnimatedSection } from "@/components/ui/AnimatedSection";
+import { GlowingText } from "@/components/ui/AnimatedText";
 
 const telemetry = [
   { label: "Suit Integrity", value: "99.2%", note: "Nanoparticle lattice" },
@@ -25,7 +26,7 @@ export function SystemsNominal() {
           <AnimatedItem>
             <h2 className="max-w-[16ch] font-sans text-4xl font-semibold leading-[0.98] tracking-tighter text-foreground md:text-6xl">
               &ldquo;And I&hellip; am&hellip;{" "}
-              <span className="text-accent">Iron Man.</span>&rdquo;
+              <GlowingText className="text-accent">Iron Man.</GlowingText>&rdquo;
             </h2>
           </AnimatedItem>
           <AnimatedItem>
